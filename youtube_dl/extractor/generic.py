@@ -3317,6 +3317,7 @@ class GenericIE(InfoExtractor):
                 return self.url_result(embed_url)
 
         if not found:
+            return
             raise UnsupportedError(url)
 
         entries = []

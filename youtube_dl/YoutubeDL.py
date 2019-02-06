@@ -91,6 +91,7 @@ from .utils import (
     YoutubeDLCookieJar,
     YoutubeDLCookieProcessor,
     YoutubeDLHandler,
+    SubException
 )
 from .cache import Cache
 from .extractor import get_info_extractor, gen_extractor_classes, _LAZY_LOADER
@@ -109,7 +110,6 @@ from .version import __version__
 
 if compat_os_name == 'nt':
     import ctypes
-
 
 class YoutubeDL(object):
     """YoutubeDL class.
@@ -804,6 +804,9 @@ class YoutubeDL(object):
                     return self.process_ie_result(ie_result, download, extra_info)
                 else:
                     return ie_result
+            except SubException:
+                print('HI')
+                pass
             except GeoRestrictedError as e:
                 msg = e.msg
                 if e.countries:
@@ -1648,8 +1651,7 @@ class YoutubeDL(object):
             available_subs.update(normal_subtitles)
         if automatic_captions and self.params.get('writeautomaticsub'):
             for lang, cap_info in automatic_captions.items():
-                if lang not in available_subs:
-                    available_subs[lang] = cap_info
+                available_subs[lang + '-auto'] = cap_info
 
         if (not self.params.get('writesubtitles') and not
                 self.params.get('writeautomaticsub') or not

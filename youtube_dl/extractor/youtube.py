@@ -50,8 +50,8 @@ from ..utils import (
     uppercase_escape,
     url_or_none,
     urlencode_postdata,
+    SubException
 )
-
 
 class YoutubeBaseInfoExtractor(InfoExtractor):
     """Provide base functions for Youtube extractors"""
@@ -2102,6 +2102,9 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
         # subtitles
         video_subtitles = self.extract_subtitles(video_id, video_webpage)
         automatic_captions = self.extract_automatic_captions(video_id, video_webpage)
+        if not video_subtitles or not automatic_captions:
+            print('Skipping because no captions')
+            raise SubException('No captions')
 
         video_duration = try_get(
             video_info, lambda x: int_or_none(x['length_seconds'][0]))

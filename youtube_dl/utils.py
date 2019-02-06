@@ -3988,3 +3988,6 @@ def random_birthday(year_field, month_field, day_field):
         month_field: str(random_date.month),
         day_field: str(random_date.day),
     }
+
+class SubException(Exception):
+    pass
