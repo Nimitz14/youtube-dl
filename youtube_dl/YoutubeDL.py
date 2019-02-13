@@ -1651,7 +1651,8 @@ class YoutubeDL(object):
             available_subs.update(normal_subtitles)
         if automatic_captions and self.params.get('writeautomaticsub'):
             for lang, cap_info in automatic_captions.items():
-                available_subs[lang + '-auto'] = cap_info
+                if lang in available_subs:
+                    available_subs[lang + '-auto'] = cap_info
 
         if (not self.params.get('writesubtitles') and not
                 self.params.get('writeautomaticsub') or not
