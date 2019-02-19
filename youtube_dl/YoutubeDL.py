@@ -805,7 +805,7 @@ class YoutubeDL(object):
                 else:
                     return ie_result
             except SubException:
-                print('HI')
+                print('NoSub')
                 pass
             except GeoRestrictedError as e:
                 msg = e.msg
@@ -1650,8 +1650,9 @@ class YoutubeDL(object):
         if normal_subtitles and self.params.get('writesubtitles'):
             available_subs.update(normal_subtitles)
         if automatic_captions and self.params.get('writeautomaticsub'):
+            available_sub_langs = list(available_subs.keys()) + [e.split('-')[0] for e in available_subs.keys()]
             for lang, cap_info in automatic_captions.items():
-                if lang in available_subs:
+                if lang in available_sub_langs:
                     available_subs[lang + '-auto'] = cap_info
 
         if self.params.get('allsubtitles', False):
@@ -1664,13 +1665,14 @@ class YoutubeDL(object):
             else:
                 requested_langs = [list(available_subs.keys())[0]]
 
-        if (not self.params.get('writesubtitles') and
-              not self.params.get('writeautomaticsub'):
+        if not self.params.get('writesubtitles') and not self.params.get('writeautomaticsub'):
             return None
-
+        print('subs: ', available_subs.keys())
         for lang in requested_langs:
+            print('Checking for lang {}'.format(lang))
             if lang not in available_subs:
-                return None
+                print('Does not have it!')
+                raise SubException
 
         formats_query = self.params.get('subtitlesformat', 'best')
         formats_preference = formats_query.split('/') if formats_query else []
